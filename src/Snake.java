@@ -4,41 +4,55 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 public @RequiredArgsConstructor class Snake {
 
     final private PlayingField playingField;
     final private int pixelSize;
-    private Frame frame;
+    private JFrame frame;
     private char direction;
 
     public void init(){
-        direction = 'd';
-        frame = new Frame();
-        frame.setBackground(Color.BLACK);
-        frame.add(new Painter(playingField, pixelSize));
-        frame.setSize(playingField.getXsize() * pixelSize,playingField.getYsize() * pixelSize);
-        frame.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                super.keyPressed(e);
-                direction = e.getKeyChar();
-            }
-        });
-        frame.setVisible(true);
+        createAndShowGui();
         while(true){
             updateGameState("");
             try {
-                TimeUnit.MILLISECONDS.sleep(600);
+                TimeUnit.MILLISECONDS.sleep(400);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
 
+    public void createAndShowGui(){
+        direction = 'd';
+        frame = new JFrame();
+        Painter p = new Painter(playingField, pixelSize);
+        p.setBackground(Color.BLACK);
+        frame.setContentPane(p);
+        frame.pack();
+        frame.setBackground(Color.BLACK);
+        frame.setSize(playingField.getXsize() * pixelSize,playingField.getYsize() * pixelSize);
+        frame.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                super.keyPressed(e);
+                if(direction == e.getKeyChar()){
+                }
+                else if(direction == 'w' && e.getKeyChar() == 's' || direction == 's' && e.getKeyChar() == 'w' || direction == 'a' && e.getKeyChar() == 'd' || direction == 'd' && e.getKeyChar() == 'a'){
+                }
+                else {
+                    direction = e.getKeyChar();
+                }
+
+            }
+        });
+        frame.setVisible(true);
+    }
+
     public void updateGameState(String message){
-        System.out.println("Updating Game State...");
         Head current = playingField.getHead();
         Head newHead;
         Coordinate newHeadCoord = new Coordinate(0, 0);
@@ -58,26 +72,51 @@ public @RequiredArgsConstructor class Snake {
         }
         Body newBody = new Body(current.getC(), current.getPrev());
         newHead = new Head(newHeadCoord, newBody);
-        playingField.set(newBody);
+
+        boolean isFood = false;
+        if(playingField.get(newHeadCoord).getClass().getName().equals("Food")){
+            isFood = true;
+        }
         playingField.set(newHead);
-        if(!message.equals("FOOD")){
+        playingField.set(newBody);
+        if(!isFood) {
             Body b = newHead.getPrev();
             Body temp = null;
-            do{
+            do {
                 b = b.getPrev();
 
-                if(b.getPrev() == null){
+                if (b.getPrev() == null) {
                     playingField.set(new Tile(b.getC()));
                     temp.setPrev(null);
                     break;
                 }
-                if(b.getPrev().getPrev() == null){
+                if (b.getPrev().getPrev() == null) {
                     temp = b;
                 }
 
-            } while(b.getPrev() != null);
+            } while (b.getPrev() != null);
         }
-        frame.getComponent(0).repaint();
+
+        if(isFood) {
+            boolean done = false;
+            int randomX;
+            int randomY;
+            while (!done) {
+                randomX = ThreadLocalRandom.current().nextInt(0, playingField.getXsize());
+                randomY = ThreadLocalRandom.current().nextInt(0, playingField.getYsize());
+                    if (playingField.get(randomX, randomY).getClass().getName().equals("Tile")) {
+                        playingField.set(new Food(new Coordinate(randomX, randomY)));
+                        System.out.println(randomX + " " + randomY);
+                        done = true;
+                    }
+            }
+        }
+
+        if(newHead.getC().getX() >= playingField.getXsize() || newHead.getC().getY() >= playingField.getYsize() || newHead.getC().getX() < 0 || newHead.getC().getY() < 0){
+            System.exit(0);
+        }
+
+        frame.repaint(10);
     }
 
 

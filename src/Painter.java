@@ -1,7 +1,8 @@
+import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.*;
 
-public class Painter extends Component {
+public class Painter extends JPanel {
 
     private PlayingField playingField;
     private int pixelSize;

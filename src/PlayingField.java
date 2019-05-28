@@ -18,13 +18,16 @@ public @Data class PlayingField {
                 tiles.put(c, new Tile(c));
             }
         }
-        Body secondBody = new Body(new Coordinate(1, 2), null);
+        Body thirdBody = new Body(new Coordinate(0,2), null);
+        Body secondBody = new Body(new Coordinate(1, 2), thirdBody);
         Body firstBody = new Body(new Coordinate(2, 2), secondBody);
         Tile head = new Head(new Coordinate(3,2), firstBody);
+        Food first = new Food(new Coordinate(7,2));
+        this.set(first);
+        this.set(thirdBody);
         this.set(secondBody);
         this.set(firstBody);
         this.set(head);
-        System.out.println(getHead().toString());
     }
 
     public Tile get(int x, int y){
@@ -32,7 +35,16 @@ public @Data class PlayingField {
     }
 
     public void set(Tile t){
+        if(t.getClass().getName().equals("Head")){
+            if(tiles.get(t.getC()).getClass().getName().equals("Body")){
+                System.exit(0);
+            }
+        }
         tiles.put(t.getC(), t);
+    }
+
+    public Tile get(Coordinate c){
+        return tiles.get(c);
     }
 
     public void remove(Coordinate c){
