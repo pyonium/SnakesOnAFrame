@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="SnakesOnAFrame:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/SnakesOnAFrame_jar</output-path>
+    <root id="archive" name="SnakesOnAFrame.jar">
+      <element id="module-output" name="SnakesOnAFrame" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/lombok.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

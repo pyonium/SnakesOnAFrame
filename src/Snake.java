@@ -17,7 +17,7 @@ public @RequiredArgsConstructor class Snake {
     public void init(){
         createAndShowGui();
         while(true){
-            updateGameState("");
+            updateGameState();
             try {
                 TimeUnit.MILLISECONDS.sleep(400);
             } catch (InterruptedException e) {
@@ -34,7 +34,7 @@ public @RequiredArgsConstructor class Snake {
         frame.setContentPane(p);
         frame.pack();
         frame.setBackground(Color.BLACK);
-        frame.setSize(playingField.getXsize() * pixelSize,playingField.getYsize() * pixelSize);
+        frame.setSize(playingField.getXsize() * pixelSize + 11,playingField.getYsize() * pixelSize + 31);
         frame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -44,7 +44,9 @@ public @RequiredArgsConstructor class Snake {
                 else if(direction == 'w' && e.getKeyChar() == 's' || direction == 's' && e.getKeyChar() == 'w' || direction == 'a' && e.getKeyChar() == 'd' || direction == 'd' && e.getKeyChar() == 'a'){
                 }
                 else {
-                    direction = e.getKeyChar();
+                    if(e.getKeyChar() == 'w' || e.getKeyChar() == 'a' || e.getKeyChar() == 's' || e.getKeyChar() == 'd'){
+                        direction = e.getKeyChar();
+                    }
                 }
 
             }
@@ -52,7 +54,7 @@ public @RequiredArgsConstructor class Snake {
         frame.setVisible(true);
     }
 
-    public void updateGameState(String message){
+    public void updateGameState(){
         Head current = playingField.getHead();
         Head newHead;
         Coordinate newHeadCoord = new Coordinate(0, 0);
@@ -116,7 +118,7 @@ public @RequiredArgsConstructor class Snake {
             System.exit(0);
         }
 
-        frame.repaint(10);
+        frame.repaint();
     }
 
 
